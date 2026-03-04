@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SMA — Minimal UI</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>SMA — Minimal UI</h1>
+    <p class="muted">A lightweight frontend scaffold to interact with the existing backend.</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Quick Links</h2>
+      <div class="grid">
+        <a class="btn" href="/reconnect-accounts.html" target="_blank">Reconnect Accounts (existing)</a>
+        <button class="btn" id="refreshStatus">Check Backend Status</button>
+        <button class="btn" id="listAccounts">List Connected Accounts</button>
+      </div>
+      <div id="output" class="output">Status output will appear here.</div>
+    </section>
+
+    <section class="card">
+      <h2>Publish Test</h2>
+      <label>Message</label>
+      <textarea id="message" rows="3">Test post from SMA Minimal UI</textarea>
+      <div class="grid">
+        <button class="btn" id="postLinkedIn">Post to LinkedIn</button>
+        <button class="btn" id="postTwitter">Post to Twitter</button>
+      </div>
+      <div id="publishResult" class="output"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">Local dev only — backend expected at <strong>http://localhost:6001</strong></footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

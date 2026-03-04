@@ -1,0 +1,98 @@
+/* ===== Layout Fix ===== */
+.page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ===== Text Wrapping Fix ===== */
+.wrap-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+/* ===============================
+   GLOBAL LAYOUT FIX
+================================ */
+.page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* ===============================
+   TEXT OVERFLOW FIX (CRITICAL)
+================================ */
+.wrap-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ===============================
+   IMAGE GRID + CARDS
+================================ */
+.images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.image-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.image-card img {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* ===============================
+   SECTION SPACING
+================================ */
+section {
+  margin-bottom: 32px;
+}
+
+.global-home-logo {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 10000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 10px;
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.global-home-logo img {
+  display: block;
+  height: 66px;
+  width: auto;
+  max-width: 320px;
+}
+
+.global-home-logo:hover {
+  transform: translateY(-1px) scale(1.01);
+  filter: drop-shadow(0 8px 20px rgba(14, 165, 233, 0.28));
+}
+
+@media (max-width: 640px) {
+  .global-home-logo {
+    top: 10px;
+    left: 10px;
+    padding: 2px;
+  }
+
+  .global-home-logo img {
+    height: 50px;
+    max-width: 240px;
+  }
+}

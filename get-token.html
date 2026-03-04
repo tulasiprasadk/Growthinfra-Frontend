@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Get Facebook Access Token</title>
+  <style>
+    body { font-family: Arial; max-width: 800px; margin: 50px auto; padding: 20px; }
+    .box { background: #f0f0f0; padding: 20px; border-radius: 8px; margin: 20px 0; }
+    button { background: #1877f2; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    button:hover { background: #0a66c2; }
+    input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    .token-box { background: #fff3cd; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #ffc107; }
+    .warning { color: #d32f2f; font-weight: bold; }
+    code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>🔑 Facebook Access Token Generator</h1>
+  
+  <div class="box">
+    <h2>Option 1: Quick Test Token (Recommended)</h2>
+    <button onclick="goToFacebookExplorer()">Open Facebook Graph Explorer →</button>
+    <p>Steps after clicking:</p>
+    <ol>
+      <li>Click "Get Token" → "Get User Access Token"</li>
+      <li>Select permissions:
+        <ul>
+          <li><code>pages_show_list</code></li>
+          <li><code>pages_manage_posts</code></li>
+          <li><code>pages_read_engagement</code></li>
+          <li><code>instagram_basic</code></li>
+          <li><code>instagram_content_publish</code></li>
+        </ul>
+      </li>
+      <li>Click "Generate Access Token"</li>
+      <li>Copy the token and paste it below ↓</li>
+    </ol>
+  </div>
+
+  <div class="token-box">
+    <h3>📋 Paste Your Token Here:</h3>
+    <textarea id="token" placeholder="Paste your Facebook access token here..." style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace;"></textarea>
+    <br><br>
+    <button onclick="copyToClipboard()">Copy Token</button>
+    <button onclick="testToken()">Test Token</button>
+  </div>
+
+  <div class="box">
+    <h2>Option 2: Get Long-Lived Token</h2>
+    <p>User access tokens expire after ~2 hours. For longer testing, convert to long-lived token:</p>
+    <input type="text" id="shortToken" placeholder="Paste short-lived token" />
+    <button onclick="extendToken()">Convert to Long-Lived Token</button>
+    <div id="longTokenResult"></div>
+  </div>
+
+  <div class="box">
+    <h2>📱 How to Use in Workflow:</h2>
+    <ol>
+      <li>Go to <code>http://localhost:6002/workflow</code></li>
+      <li>Under "4) Post to Accounts", fill in:
+        <ul>
+          <li><strong>Label:</strong> rrnagar FB</li>
+          <li><strong>Provider/Page ID:</strong> NAMASTERNAGAR</li>
+          <li><strong>Access Token:</strong> [paste your token]</li>
+          <li><strong>Platform:</strong> Facebook</li>
+        </ul>
+      </li>
+      <li>Click "Add account"</li>
+      <li>Generate content and post!</li>
+    </ol>
+  </div>
+
+  <script>
+    function goToFacebookExplorer() {
+      window.open('https://developers.facebook.com/tools/explorer/', '_blank');
+    }
+
+    function copyToClipboard() {
+      const token = document.getElementById('token').value;
+      if (!token) {
+        alert('No token to copy!');
+        return;
+      }
+      navigator.clipboard.writeText(token);
+      alert('✅ Token copied to clipboard!');
+    }
+
+    function testToken() {
+      const token = document.getElementById('token').value;
+      if (!token) {
+        alert('Please paste a token first');
+        return;
+      }
+      
+      fetch(`https://graph.facebook.com/me?access_token=${token}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) {
+            alert('❌ Token Error: ' + data.error.message);
+          } else {
+            alert('✅ Token Valid!\nUser: ' + data.name + '\nID: ' + data.id);
+          }
+        });
+    }
+
+    function extendToken() {
+      const shortToken = document.getElementById('shortToken').value;
+      if (!shortToken) {
+        alert('Paste a token first');
+        return;
+      }
+
+      const clientId = '1423609146143350';
+      const clientSecret = 'b19dd1c92919dd66dfcc0160e63d3140';
+      
+      fetch(`https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=${clientId}&client_secret=${clientSecret}&fb_exchange_token=${shortToken}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) {
+            alert('❌ Error: ' + data.error.message);
+          } else {
+            const result = document.getElementById('longTokenResult');
+            result.innerHTML = `
+              <div style="background: #c8e6c9; padding: 15px; border-radius: 6px; margin-top: 10px;">
+                <strong>✅ Long-Lived Token Generated!</strong><br><br>
+                <strong>Token:</strong><br>
+                <textarea style="width: 100%; height: 80px; padding: 10px; font-family: monospace; border: 1px solid #4caf50; border-radius: 4px;">${data.access_token}</textarea><br><br>
+                <strong>Expires in:</strong> ${Math.floor(data.expires_in / 86400)} days<br>
+                <button onclick="navigator.clipboard.writeText('${data.access_token}'); alert('Copied!');">Copy Long-Lived Token</button>
+              </div>
+            `;
+          }
+        });
+    }
+  </script>
+</body>
+</html>

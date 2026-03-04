@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fix RRNagar Customer</title>
+</head>
+<body>
+  <h1>Customer Setup for rrnagar.com</h1>
+  <button onclick="setupCustomer()">Click to Setup rrnagar.com</button>
+  <pre id="output"></pre>
+
+  <script>
+    function setupCustomer() {
+      const customer = {
+        id: `cust_${Date.now()}`,
+        name: 'rrnagar.com',
+        logoUrl: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200',
+        tagline: 'ತಾಜಾ, ತ್ವರಿತ, ತೃಪ್ತಿಕರ Fresh. Fast. Fulfillment.',
+        contact: '984400700',
+        email: 'namaste@rrnagar.com',
+        website: 'rrnagar.com',
+        description: 'www.rrnagar.com offers products, services, consultancy to all your requirements. We are your extended connections to deliver your requirements.',
+        imagePrompt: 'ecommerce products services delivery fresh vegetables groceries',
+        launchContext: 'Launched one week ago',
+        audience: 'All customers seeking products, services, and consultancy',
+      };
+      
+      localStorage.removeItem('sma_customers');
+      localStorage.setItem('sma_customers', JSON.stringify([customer]));
+      
+      document.getElementById('output').textContent = 
+        'Customer created!\n\n' + 
+        'Name: ' + customer.name + '\n' +
+        'Tagline: ' + customer.tagline + '\n' +
+        'Contact: ' + customer.contact + '\n' +
+        'Email: ' + customer.email + '\n' +
+        'Website: ' + customer.website + '\n\n' +
+        'Now reload your workflow page!';
+    }
+  </script>
+</body>
+</html>
