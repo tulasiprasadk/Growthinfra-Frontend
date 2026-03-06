@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { setAuthSession } from '../utils/auth';
+import { getApiBaseUrl, parseApiResponse } from '../utils/api';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -17,13 +18,12 @@ export default function SignupPage() {
       setLoading(true);
       setError('');
 
-      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-      const response = await fetch(`${apiBase}/api/auth/signup`, {
+      const response = await fetch(`${getApiBaseUrl()}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      const data = await response.json();
+      const data = await parseApiResponse(response);
 
       if (!response.ok) {
         throw new Error(data.message || data.error || 'Signup failed');

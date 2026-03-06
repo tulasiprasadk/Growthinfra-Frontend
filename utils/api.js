@@ -1,4 +1,17 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+const PROD_API_BASE_URL = 'https://signalflow-backend.vercel.app';
+
+export const getApiBaseUrl = () => {
+  const configured = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+  if (configured) return configured.replace(/\/$/, '');
+
+  if (typeof window !== 'undefined' && window.location.hostname.includes('signalflow-frontend')) {
+    return PROD_API_BASE_URL;
+  }
+
+  return '';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 /**
  * Initiate Twitter OAuth login flow
@@ -33,14 +46,30 @@ export const initiateInstagramOAuth = () => {
  * Generic OAuth initiator
  */
 export const initiateOAuth = (provider) => {
-  const provider_lower = provider.toLowerCase();
-  window.location.href = `${API_BASE_URL}/api/social/connect/${provider_lower}`;
+  const providerLower = provider.toLowerCase();
+  window.location.href = `${API_BASE_URL}/api/social/connect/${providerLower}`;
 };
 
+export async function parseApiResponse(response) {
+  const text = await response.text();
+
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    if (!response.ok) {
+      throw new Error(text || `Request failed with status ${response.status}`);
+    }
+
+    return { raw: text };
+  }
+}
+
 export default {
+  getApiBaseUrl,
   initiateTwitterOAuth,
   initiateFacebookOAuth,
   initiateLinkedInOAuth,
   initiateInstagramOAuth,
   initiateOAuth,
+  parseApiResponse,
 };
