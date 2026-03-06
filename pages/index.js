@@ -8,53 +8,94 @@ export default function Home() {
 
   useEffect(() => {
     const { connected, success, reason } = router.query;
-    if (connected) {
-      if (success === '1') {
-        setMessage(`✅ ${connected} connected successfully!`);
-        setTimeout(() => setMessage(''), 3000);
-      } else if (success === '0') {
-        const extra = reason ? ` (${String(reason)})` : '';
-        setMessage(`❌ Failed to connect ${connected}. Please try again.${extra}`);
-        setTimeout(() => setMessage(''), 3000);
-      }
+    if (!connected) return;
+
+    if (success === '1') {
+      setMessage(`${connected} connected successfully.`);
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+
+    if (success === '0') {
+      const extra = reason ? ` (${String(reason)})` : '';
+      setMessage(`Failed to connect ${connected}. Please try again.${extra}`);
+      setTimeout(() => setMessage(''), 3000);
     }
   }, [router.query]);
 
   const platforms = [
-    { name: 'Facebook', provider: 'facebook', icon: '🔵' },
-    { name: 'Instagram', provider: 'instagram', icon: '📸' },
-    { name: 'Twitter', provider: 'twitter', icon: '🐦' },
-    { name: 'LinkedIn', provider: 'linkedin', icon: '💼' },
+    { name: 'Facebook', provider: 'facebook' },
+    { name: 'Instagram', provider: 'instagram' },
+    { name: 'Twitter', provider: 'twitter' },
+    { name: 'LinkedIn', provider: 'linkedin' },
   ];
 
   const handleConnect = (provider) => {
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001';
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
     const connectUrl = `${apiBase}/api/social/connect/${provider}`;
     window.location.href = connectUrl;
   };
 
+  const messageIsSuccess = message.toLowerCase().includes('successfully');
+
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      <h1 style={{ fontSize: '32px', marginBottom: '10px' }}>🚀 SignalFlow</h1>
-      <p style={{ fontSize: '16px', color: '#666', marginBottom: '30px' }}>Connect and manage your social accounts with SignalFlow</p>
+    <div
+      style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '20px',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <button
+          onClick={() => router.push('/login')}
+          style={{
+            padding: '10px 18px',
+            borderRadius: '999px',
+            border: '1px solid #cbd5e1',
+            background: '#fff',
+            color: '#0f172a',
+            fontSize: '14px',
+            fontWeight: '700',
+            cursor: 'pointer',
+          }}
+        >
+          Login
+        </button>
+      </div>
+
+      <h1 style={{ fontSize: '32px', marginBottom: '10px' }}>SignalFlow</h1>
+      <p style={{ fontSize: '16px', color: '#666', marginBottom: '30px' }}>
+        Connect and manage your social accounts with SignalFlow
+      </p>
 
       {message && (
-        <div style={{
-          padding: '12px 16px',
-          marginBottom: '20px',
-          borderRadius: '6px',
-          background: message.includes('✅') ? '#d1fae5' : '#fee2e2',
-          color: message.includes('✅') ? '#065f46' : '#991b1b',
-          border: `1px solid ${message.includes('✅') ? '#6ee7b7' : '#fca5a5'}`,
-          fontSize: '14px',
-          fontWeight: '600'
-        }}>
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: '20px',
+            borderRadius: '6px',
+            background: messageIsSuccess ? '#d1fae5' : '#fee2e2',
+            color: messageIsSuccess ? '#065f46' : '#991b1b',
+            border: `1px solid ${messageIsSuccess ? '#6ee7b7' : '#fca5a5'}`,
+            fontSize: '14px',
+            fontWeight: '600',
+          }}
+        >
           {message}
         </div>
       )}
 
-      {/* Connect Panel */}
-      <div style={{ border: '1px solid #ddd', borderRadius: '8px', padding: '20px', marginBottom: '20px', background: '#fff' }}>
+      <div
+        style={{
+          border: '1px solid #ddd',
+          borderRadius: '8px',
+          padding: '20px',
+          marginBottom: '20px',
+          background: '#fff',
+        }}
+      >
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           style={{
@@ -71,16 +112,30 @@ export default function Home() {
             alignItems: 'center',
           }}
         >
-          <span>🔗 Connect Social Accounts</span>
-          <span style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}>▼</span>
+          <span>Connect Social Accounts</span>
+          <span
+            style={{
+              transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.3s',
+            }}
+          >
+            v
+          </span>
         </button>
 
         {isExpanded && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px', marginTop: '15px' }}>
-            {platforms.map((p) => (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+              gap: '10px',
+              marginTop: '15px',
+            }}
+          >
+            {platforms.map((platform) => (
               <button
-                key={p.provider}
-                onClick={() => handleConnect(p.provider)}
+                key={platform.provider}
+                onClick={() => handleConnect(platform.provider)}
                 style={{
                   padding: '15px',
                   border: '2px solid #ddd',
@@ -91,17 +146,30 @@ export default function Home() {
                   fontWeight: '600',
                   transition: 'all 0.2s',
                 }}
-                onHover={(e) => e.target.style.borderColor = '#2563eb'}
               >
-                {p.icon} {p.name}
+                {platform.name}
               </button>
             ))}
           </div>
         )}
       </div>
 
-      {/* Action Buttons */}
-      <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+      <div style={{ display: 'flex', gap: '10px', marginTop: '20px', flexWrap: 'wrap' }}>
+        <button
+          onClick={() => router.push('/login')}
+          style={{
+            padding: '12px 24px',
+            borderRadius: '6px',
+            border: '1px solid #2563eb',
+            background: '#eff6ff',
+            color: '#1d4ed8',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+          }}
+        >
+          Login
+        </button>
         <button
           onClick={() => router.push('/workflow')}
           style={{
@@ -115,7 +183,7 @@ export default function Home() {
             cursor: 'pointer',
           }}
         >
-          ➜ Create Workflow
+          Create Workflow
         </button>
         <button
           onClick={() => router.push('/dashboard')}
@@ -130,7 +198,7 @@ export default function Home() {
             cursor: 'pointer',
           }}
         >
-          📊 Dashboard
+          Dashboard
         </button>
       </div>
     </div>

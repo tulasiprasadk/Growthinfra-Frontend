@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SocialConnectPanel from '../components/Social/SocialConnectPanel';
 import SocialAccountList from '../components/Social/SocialAccountList';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 export default function DashboardPage() {
   const [apiBase, setApiBase] = useState(API_BASE);

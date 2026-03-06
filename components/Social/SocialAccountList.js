@@ -67,7 +67,7 @@ export default function SocialAccountList() {
     const fetchAccounts = async () => {
       try {
         setLoading(true);
-        const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001';
+        const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
         const response = await fetch(`${apiBase}/api/social/pages`);
         
         if (!response.ok) {
@@ -91,7 +91,7 @@ export default function SocialAccountList() {
     if (!confirm('Are you sure you want to disconnect this account?')) return;
 
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001';
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const response = await fetch(`${apiBase}/api/social/pages/${accountId}`, {
         method: 'DELETE',
       });

@@ -1,6 +1,6 @@
-﻿import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 const RELIABLE_FALLBACK_IMAGES = [
   'https://images.unsplash.com/photo-1556742393-d75f468bfcb0?w=1200&h=800&fit=crop',
   'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=800&fit=crop',

@@ -17,7 +17,7 @@ export default function AccountsPage() {
     try {
       setSyncing(true);
       setMessage(null);
-      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001';
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const response = await fetch(`${apiBase}/api/social/refresh/instagram`, {
         method: 'POST',
       });
@@ -43,17 +43,17 @@ export default function AccountsPage() {
   };
 
   const handleConnectFacebook = () => {
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001';
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
     window.location.href = `${apiBase}/api/social/connect/facebook`;
   };
 
   const handleConnectLinkedIn = () => {
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001';
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
     window.location.href = `${apiBase}/api/social/connect/linkedin`;
   };
 
   const handleConnectTwitter = () => {
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6001';
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
     window.location.href = `${apiBase}/api/social/connect/twitter`;
   };
 
