@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { authFetch } from '../../utils/auth';
 
 const platformIcons = {
   twitter: '🐦',
@@ -67,8 +68,7 @@ export default function SocialAccountList() {
     const fetchAccounts = async () => {
       try {
         setLoading(true);
-        const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-        const response = await fetch(`${apiBase}/api/social/pages`);
+        const response = await authFetch('/api/social/pages');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch accounts: ${response.statusText}`);
@@ -91,8 +91,7 @@ export default function SocialAccountList() {
     if (!confirm('Are you sure you want to disconnect this account?')) return;
 
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-      const response = await fetch(`${apiBase}/api/social/pages/${accountId}`, {
+      const response = await authFetch(`/api/social/pages/${accountId}`, {
         method: 'DELETE',
       });
 

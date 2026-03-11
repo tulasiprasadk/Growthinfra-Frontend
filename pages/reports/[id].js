@@ -1,5 +1,7 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { authFetch } from '../../utils/auth';
 
 const theme = {
   bg: '#F4F6FB',
@@ -13,6 +15,22 @@ const theme = {
 export default function ReportDetailsPage() {
   const router = useRouter();
   const { id } = router.query;
+  const [report, setReport] = useState(null);
+
+  useEffect(() => {
+    if (!id) return;
+    const load = async () => {
+      try {
+        const response = await authFetch('/api/reports');
+        const data = await response.json();
+        const found = Array.isArray(data) ? data.find((item) => item.id === id) : null;
+        setReport(found || null);
+      } catch {
+        setReport(null);
+      }
+    };
+    load();
+  }, [id]);
 
   return (
     <div style={{ background: theme.bg, minHeight: '100vh', padding: '40px 16px' }}>
@@ -30,9 +48,11 @@ export default function ReportDetailsPage() {
             padding: 24,
           }}
         >
-          <h1 style={{ marginBottom: 8 }}>Report: {id || 'Loading'}</h1>
+          <h1 style={{ marginBottom: 8 }}>Report: {report?.type || id || 'Loading'}</h1>
           <p style={{ color: theme.muted }}>
-            Detailed breakdown of campaign performance, channel reach, and engagement trends.
+            {report
+              ? `Campaign: ${report.campaign?.name || report.campaignId}`
+              : 'Detailed breakdown of campaign performance, channel reach, and engagement trends.'}
           </p>
 
           <div style={{ marginTop: 24, display: 'grid', gap: 14 }}>
@@ -60,9 +80,9 @@ export default function ReportDetailsPage() {
           <div style={{ marginTop: 24 }}>
             <h3>Highlights</h3>
             <ul style={{ marginTop: 8, color: theme.muted }}>
-              <li>Instagram reels delivered the highest completion rate.</li>
-              <li>Facebook engagement improved with shorter headlines.</li>
-              <li>LinkedIn CTR peaked on Wednesday morning posts.</li>
+              <li>Organization: {report?.campaign?.organization?.name || 'Unknown'}</li>
+              <li>Generated at: {report?.generatedAt ? new Date(report.generatedAt).toLocaleString() : 'Unavailable'}</li>
+              <li>File URL: {report?.fileUrl || 'No report file attached'}</li>
             </ul>
           </div>
         </div>

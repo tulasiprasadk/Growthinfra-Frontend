@@ -112,7 +112,13 @@ export default function ContentScheduler({ latestApproved, connectedPages, organ
       return;
     }
     const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-    fetch(`${API_BASE}/api/social/pages`)
+    fetch(`${API_BASE}/api/social/pages`, {
+      headers: (() => {
+        if (typeof window === 'undefined') return {};
+        const token = localStorage.getItem('growthinfra_auth_token') || '';
+        return token ? { Authorization: `Bearer ${token}` } : {};
+      })(),
+    })
       .then(r => r.json())
       .then(async (data) => {
         const list = data || [];
@@ -122,7 +128,13 @@ export default function ContentScheduler({ latestApproved, connectedPages, organ
         if (!hasInstagram && hasFacebook) {
           try {
             await fetch(`${API_BASE}/api/social/refresh/instagram`, { method: 'POST' });
-            const refreshed = await fetch(`${API_BASE}/api/social/pages`).then(r => r.json());
+            const refreshed = await fetch(`${API_BASE}/api/social/pages`, {
+              headers: (() => {
+                if (typeof window === 'undefined') return {};
+                const token = localStorage.getItem('growthinfra_auth_token') || '';
+                return token ? { Authorization: `Bearer ${token}` } : {};
+              })(),
+            }).then(r => r.json());
             setPages(refreshed || []);
           } catch {
             // ignore refresh failures

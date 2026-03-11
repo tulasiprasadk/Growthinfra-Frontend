@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { authFetch } from '../utils/auth';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 const RELIABLE_FALLBACK_IMAGES = [
@@ -113,7 +114,7 @@ export default function WorkflowPage() {
 
   const loadAccounts = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/social/pages`);
+      const res = await authFetch('/api/social/pages');
       const json = await res.json();
       const list = Array.isArray(json) ? json : [];
       // Apply custom labels
@@ -179,9 +180,8 @@ export default function WorkflowPage() {
     try {
       const results = await Promise.all(
         selectedIds.map((id) =>
-          fetch(`${API_BASE}/api/social/pages/${id}/organization`, {
+          authFetch(`/api/social/pages/${id}/organization`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ organizationId: targetOrganizationId }),
           }).then(async (res) => {
             if (!res.ok) {

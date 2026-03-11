@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import AnalyticsSummary from '../../components/Dashboard/AnalyticsSummary';
 import ReportDownload from '../../components/Dashboard/ReportDownload';
 import SuggestionsPanel from '../../components/Dashboard/SuggestionsPanel';
+import { authFetch } from '../../utils/auth';
 
 const theme = {
   bg: '#F4F6FB',
@@ -14,6 +16,8 @@ const theme = {
 };
 
 export default function ReportsIndexPage() {
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
   const stats = [
     { label: 'Reach', value: '128.4K', delta: '+12%' },
     { label: 'Engagement', value: '14.2K', delta: '+8%' },
@@ -21,17 +25,38 @@ export default function ReportsIndexPage() {
     { label: 'Conversions', value: '1.2K', delta: '+3%' },
   ];
 
-  const reports = [
-    { id: 'weekly-2026-01', name: 'Weekly Summary', date: 'Jan 12, 2026', size: '2.4 MB' },
-    { id: 'campaign-rrnagar', name: 'Campaign: Rrnagar Launch', date: 'Jan 10, 2026', size: '3.1 MB' },
-    { id: 'monthly-dec-2025', name: 'Monthly Performance', date: 'Dec 31, 2025', size: '4.8 MB' },
-  ];
-
   const suggestions = [
     'Post Instagram reels between 6–9 PM for higher completion rates.',
     'Refresh the Facebook creative every 10 days to prevent fatigue.',
     'Repurpose top-performing copy into LinkedIn carousel posts.',
   ];
+
+  useEffect(() => {
+    const loadReports = async () => {
+      try {
+        const response = await authFetch('/api/reports');
+        const data = await response.json();
+        setReports(
+          Array.isArray(data)
+            ? data.map((report) => ({
+                id: report.id,
+                name: report.type || 'Report',
+                date: new Date(report.generatedAt).toLocaleDateString(),
+                size: report.fileUrl ? 'File available' : 'No file',
+                fileUrl: report.fileUrl || '',
+                campaignName: report.campaign?.name || report.campaignId,
+              }))
+            : [],
+        );
+      } catch {
+        setReports([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadReports();
+  }, []);
 
   return (
     <div style={{ background: theme.bg, minHeight: '100vh', padding: '40px 16px' }}>
@@ -74,6 +99,10 @@ export default function ReportsIndexPage() {
           }}
         >
           <h3 style={{ marginBottom: 12 }}>Recent report details</h3>
+          {loading && <div style={{ color: theme.muted }}>Loading reports...</div>}
+          {!loading && reports.length === 0 && (
+            <div style={{ color: theme.muted }}>No reports are available for your organizations yet.</div>
+          )}
           <div style={{ display: 'grid', gap: 12 }}>
             {reports.map(report => (
               <Link
@@ -92,7 +121,7 @@ export default function ReportsIndexPage() {
               >
                 <div>
                   <div style={{ fontWeight: 600 }}>{report.name}</div>
-                  <div style={{ color: theme.muted, fontSize: 13 }}>{report.date}</div>
+                  <div style={{ color: theme.muted, fontSize: 13 }}>{report.date} {report.campaignName ? `· ${report.campaignName}` : ''}</div>
                 </div>
                 <span style={{ color: theme.primary, fontWeight: 600 }}>View</span>
               </Link>

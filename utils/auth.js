@@ -32,11 +32,12 @@ export function getStoredUser() {
   }
 }
 
-export function isPublicSignupEnabled() {
-  if (typeof window !== 'undefined' && window.location.hostname.includes('localhost')) {
-    return true;
-  }
+export function isStoredUserAdmin() {
+  const user = getStoredUser();
+  return Boolean(user?.isAdmin);
+}
 
+export function isPublicSignupEnabled() {
   return String(process.env.NEXT_PUBLIC_ALLOW_SIGNUP || '').toLowerCase() === 'true';
 }
 

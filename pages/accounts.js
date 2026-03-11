@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import SocialAccountList from '../components/Social/SocialAccountList';
 import SocialConnectPanel from '../components/Social/SocialConnectPanel';
+import { authFetch } from '../utils/auth';
 
 export default function AccountsPage() {
   const router = useRouter();
@@ -17,8 +18,7 @@ export default function AccountsPage() {
     try {
       setSyncing(true);
       setMessage(null);
-      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-      const response = await fetch(`${apiBase}/api/social/refresh/instagram`, {
+      const response = await authFetch('/api/social/refresh/instagram', {
         method: 'POST',
       });
 
