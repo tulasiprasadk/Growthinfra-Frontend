@@ -1,9 +1,13 @@
 import { getApiBaseUrl } from '../../utils/api';
+import { getStoredUser } from '../../utils/auth';
 
 export default function SocialConnectButton({ provider, name, icon, onConnect }) {
   const handleConnect = () => {
     const base = getApiBaseUrl();
-    const url = `${base}/api/social/connect/${provider}`;
+    const user = getStoredUser();
+    const organizationId = user?.memberships?.[0]?.organization?.id || '';
+    const query = organizationId ? `?organizationId=${encodeURIComponent(organizationId)}` : '';
+    const url = `${base}/api/social/connect/${provider}${query}`;
     // Redirect to backend OAuth endpoint
     if (typeof window !== 'undefined') {
       window.location.href = url;
