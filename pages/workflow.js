@@ -1,12 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { authFetch } from '../utils/auth';
+import { getApiBaseUrl } from '../utils/api';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-const RELIABLE_FALLBACK_IMAGES = [
-  'https://images.unsplash.com/photo-1556742393-d75f468bfcb0?w=1200&h=800&fit=crop',
-  'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&h=800&fit=crop',
-  'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&h=800&fit=crop',
-];
+const API_BASE = getApiBaseUrl();
 
 export default function WorkflowPage() {
   const [topic, setTopic] = useState('');
@@ -205,6 +201,17 @@ export default function WorkflowPage() {
 
   const isAccountPostable = (acc) => acc?.isPostable !== false;
 
+  const cleanApiError = (value, fallbackMessage) => {
+    const raw = String(value || '').trim();
+    if (!raw) return fallbackMessage;
+    const withoutTags = raw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!withoutTags) return fallbackMessage;
+    if (/^<!doctype html/i.test(raw) || /next-head-count|__NEXT_DATA__/i.test(raw)) {
+      return fallbackMessage;
+    }
+    return withoutTags.slice(0, 220);
+  };
+
   const getDisplayAccountLabel = (acc) => {
     const platform = acc?.platform || 'unknown';
     const rawLabel = String(acc?.label || '').trim();
@@ -358,14 +365,9 @@ export default function WorkflowPage() {
       const vStatus = data?.videoStatus || '';
       const plan = data?.videoPlan || null;
       const tags = data?.hashtags || '';
-      const makeFallbackImages = () => {
-        const nonce = Date.now();
-        return RELIABLE_FALLBACK_IMAGES.map((url, idx) => `${url}&sig=${nonce + idx}`);
-      };
       setResultText(String(text || ''));
       setHashtags(String(tags || ''));
-      const fallback = makeFallbackImages(topic);
-      setImages(imageList.length ? imageList : fallback);
+      setImages(imageList);
       setVideos(videoList);
       setVideoStatus(String(vStatus || ''));
       setVideoPlan(plan);
@@ -373,25 +375,20 @@ export default function WorkflowPage() {
       setAnimatedVideoUrl('');
       setSelectedVideo(videoList[0] || '');
       setSelectedMediaType('image');
-      setSelectedImage((imageList[0] || fallback[0] || ''));
+      setSelectedImage(imageList[0] || '');
       if (!imageList.length) {
-        setError('No images returned from the server. Showing fallback images instead.');
+        setError('No relevant images were returned for this prompt. Refine the topic and generate again.');
       }
     } catch (err) {
-      const makeFallbackImages = () => {
-        const nonce = Date.now();
-        return RELIABLE_FALLBACK_IMAGES.map((url, idx) => `${url}&sig=${nonce + idx}`);
-      };
-      const fb = makeFallbackImages(topic);
-      setImages(fb);
-      setSelectedImage(fb[0] || '');
+      setImages([]);
+      setSelectedImage('');
       setVideos([]);
       setSelectedVideo('');
       setSelectedMediaType('image');
       setVideoStatus('search_request_failed');
       cleanupAnimatedUrl();
       setAnimatedVideoUrl('');
-      setError(`Failed to generate content. Showing fallback images. ${String(err?.message || err || '')}`.trim());
+      setError(`Failed to generate content. ${cleanApiError(err?.message || err, 'The content service did not return a valid response.')}`.trim());
     } finally {
       setLoading(false);
     }
