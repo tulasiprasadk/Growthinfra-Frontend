@@ -2,8 +2,28 @@ import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import SocialAccountList from '../components/Social/SocialAccountList';
 import SocialConnectPanel from '../components/Social/SocialConnectPanel';
-import { authFetch } from '../utils/auth';
+import { authFetch, getStoredUser } from '../utils/auth';
 import { getApiBaseUrl } from '../utils/api';
+
+function buildOAuthUrl(provider) {
+  const apiBase = getApiBaseUrl();
+  const user = getStoredUser();
+  const organizationId = user?.memberships?.[0]?.organization?.id || '';
+  const params = new URLSearchParams();
+  if (organizationId) {
+    params.set('organizationId', organizationId);
+  }
+
+  if (provider === 'twitter' && typeof window !== 'undefined') {
+    const raw = window.prompt('Enter the Twitter/X handle for this account (without @).');
+    const accountLabel = String(raw || '').trim().replace(/^@+/, '');
+    if (!accountLabel) return '';
+    params.set('accountLabel', accountLabel);
+  }
+
+  const query = params.toString() ? `?${params.toString()}` : '';
+  return `${apiBase}/api/social/connect/${provider}${query}`;
+}
 
 export default function AccountsPage() {
   const router = useRouter();
@@ -12,7 +32,7 @@ export default function AccountsPage() {
   const [message, setMessage] = useState(null);
 
   const handleAccountAdded = useCallback(() => {
-    setRefreshKey(prev => prev + 1);
+    setRefreshKey((prev) => prev + 1);
   }, []);
 
   const handleSyncInstagram = async () => {
@@ -30,9 +50,9 @@ export default function AccountsPage() {
       const data = await response.json();
       setMessage({
         type: 'success',
-        text: `✓ Synced ${data.count} Instagram account(s) from Facebook pages`,
+        text: `Synced ${data.count} Instagram account(s) from Facebook pages.`,
       });
-      setRefreshKey(prev => prev + 1);
+      setRefreshKey((prev) => prev + 1);
     } catch (error) {
       setMessage({
         type: 'error',
@@ -43,128 +63,83 @@ export default function AccountsPage() {
     }
   };
 
-  const handleConnectFacebook = () => {
-    const apiBase = getApiBaseUrl();
-    window.location.href = `${apiBase}/api/social/connect/facebook`;
-  };
-
-  const handleConnectLinkedIn = () => {
-    const apiBase = getApiBaseUrl();
-    window.location.href = `${apiBase}/api/social/connect/linkedin`;
-  };
-
-  const handleConnectTwitter = () => {
-    const apiBase = getApiBaseUrl();
-    window.location.href = `${apiBase}/api/social/connect/twitter`;
+  const handleConnect = (provider) => {
+    const url = buildOAuthUrl(provider);
+    if (url) {
+      window.location.href = url;
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => router.push('/')}
-                className="p-2 hover:bg-slate-100 rounded-lg transition duration-200"
-                title="Back to home"
-              >
-                <span className="text-2xl">🏠</span>
-              </button>
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900">Social Accounts</h1>
-                <p className="text-sm text-slate-600 mt-1">Manage and connect your social media profiles</p>
-              </div>
+    <div className="brand-shell">
+      <div style={{ maxWidth: '1340px', margin: '0 auto', display: 'grid', gap: '24px' }}>
+        <div className="brand-surface" style={{ padding: '28px 30px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '18px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div>
+              <div className="brand-pill">GrowthInfra Account Layer</div>
+              <h1 style={{ margin: '16px 0 8px', fontSize: '40px', lineHeight: 1.05 }}>Social Account Management</h1>
+              <p style={{ margin: 0, color: '#475569', maxWidth: '760px', lineHeight: 1.7 }}>
+                Manage brand pages, Instagram profiles, X accounts, and LinkedIn identity from one GrowthInfra operations surface.
+              </p>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-slate-500 uppercase tracking-wider">Account Management</p>
-            </div>
+            <img src="/growthinfra-logo.png" alt="GrowthInfra" style={{ width: '220px', maxWidth: '100%', height: 'auto' }} />
           </div>
         </div>
-      </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        {/* Status Message */}
         {message && (
           <div
-            className={`mb-8 p-4 rounded-xl border backdrop-blur-sm transition-all ${
-              message.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                : 'bg-red-50 border-red-200 text-red-800'
-            }`}
+            className="brand-surface"
+            style={{
+              padding: '16px 20px',
+              borderColor: message.type === 'success' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)',
+              color: message.type === 'success' ? '#065f46' : '#991b1b',
+              background: message.type === 'success' ? 'rgba(209,250,229,0.92)' : 'rgba(254,226,226,0.92)',
+            }}
           >
-            <p className="font-medium">{message.text}</p>
+            <strong>{message.text}</strong>
           </div>
         )}
 
-        {/* Quick Actions */}
-        <div className="mb-12">
-          <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-            <span>⚡</span> Quick Actions
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button
-              onClick={handleConnectFacebook}
-              className="group relative overflow-hidden bg-white border-2 border-blue-500 rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="absolute inset-0 bg-blue-50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-              <div className="relative flex flex-col items-center gap-3">
-                <span className="text-4xl">🔵</span>
-                <span className="font-semibold text-slate-900">Connect Facebook</span>
-              </div>
+        <div className="brand-surface" style={{ padding: '28px' }}>
+          <div className="brand-pill">Quick Actions</div>
+          <h2 style={{ margin: '14px 0 8px', fontSize: '30px' }}>Add or sync channels</h2>
+          <p style={{ margin: '0 0 22px', color: '#475569', lineHeight: 1.6 }}>Use these shortcuts to onboard additional platforms or refresh connected Instagram profiles from Facebook.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+            <button onClick={() => handleConnect('facebook')} style={{ padding: '20px', borderRadius: '22px', border: '1px solid rgba(37,99,235,0.18)', background: 'linear-gradient(180deg, rgba(37,99,235,0.08), #fff)', cursor: 'pointer' }}>
+              <div style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', fontWeight: 700 }}>Facebook</div>
+              <div style={{ marginTop: '10px', fontSize: '22px', fontWeight: 800 }}>Connect Pages</div>
             </button>
-            
-            <button
-              onClick={handleSyncInstagram}
-              disabled={syncing}
-              className="group relative overflow-hidden bg-white border-2 border-pink-500 rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-50"
-            >
-              <div className="absolute inset-0 bg-pink-50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-              <div className="relative flex flex-col items-center gap-3">
-                <span className="text-4xl">📸</span>
-                <span className="font-semibold text-slate-900">{syncing ? 'Syncing...' : 'Sync Instagram'}</span>
-              </div>
+            <button onClick={handleSyncInstagram} disabled={syncing} style={{ padding: '20px', borderRadius: '22px', border: '1px solid rgba(219,39,119,0.18)', background: 'linear-gradient(180deg, rgba(219,39,119,0.08), #fff)', cursor: 'pointer' }}>
+              <div style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', fontWeight: 700 }}>Instagram</div>
+              <div style={{ marginTop: '10px', fontSize: '22px', fontWeight: 800 }}>{syncing ? 'Syncing...' : 'Sync Profiles'}</div>
             </button>
-
-            <button
-              onClick={handleConnectTwitter}
-              className="group relative overflow-hidden bg-white border-2 border-black rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="absolute inset-0 bg-slate-100 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-              <div className="relative flex flex-col items-center gap-3">
-                <span className="text-4xl">🐦</span>
-                <span className="font-semibold text-slate-900">Connect Twitter</span>
-              </div>
+            <button onClick={() => handleConnect('twitter')} style={{ padding: '20px', borderRadius: '22px', border: '1px solid rgba(15,23,42,0.18)', background: 'linear-gradient(180deg, rgba(15,23,42,0.08), #fff)', cursor: 'pointer' }}>
+              <div style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', fontWeight: 700 }}>Twitter / X</div>
+              <div style={{ marginTop: '10px', fontSize: '22px', fontWeight: 800 }}>Connect Account</div>
             </button>
-            
-            <button
-              onClick={handleConnectLinkedIn}
-              className="group relative overflow-hidden bg-white border-2 border-blue-800 rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="absolute inset-0 bg-blue-50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-              <div className="relative flex flex-col items-center gap-3">
-                <span className="text-4xl">💼</span>
-                <span className="font-semibold text-slate-900">Connect LinkedIn</span>
-              </div>
+            <button onClick={() => handleConnect('linkedin')} style={{ padding: '20px', borderRadius: '22px', border: '1px solid rgba(29,78,216,0.18)', background: 'linear-gradient(180deg, rgba(29,78,216,0.08), #fff)', cursor: 'pointer' }}>
+              <div style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', fontWeight: 700 }}>LinkedIn</div>
+              <div style={{ marginTop: '10px', fontSize: '22px', fontWeight: 800 }}>Connect Identity</div>
             </button>
           </div>
         </div>
 
-        {/* Connected Accounts */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-2">
-            <span>🔗</span> Your Connected Accounts
-            {refreshKey > 0 && <span className="text-sm font-normal text-emerald-600 ml-auto">✓ Updated</span>}
-          </h2>
+        <div className="brand-surface" style={{ padding: '28px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '18px' }}>
+            <div>
+              <div className="brand-pill">Connected Inventory</div>
+              <h2 style={{ margin: '14px 0 8px', fontSize: '30px' }}>Connected Accounts</h2>
+              <p style={{ margin: 0, color: '#475569', lineHeight: 1.6 }}>Review every active brand connection and remove stale access when needed.</p>
+            </div>
+            {refreshKey > 0 && <span style={{ color: '#059669', fontWeight: 700 }}>Updated</span>}
+          </div>
           <SocialAccountList key={refreshKey} />
         </div>
 
-        {/* Expandable Panel */}
-        <div className="border-t border-slate-200 pt-12">
-          <h2 className="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-2">
-            <span>➕</span> Add More Accounts
-          </h2>
+        <div className="brand-surface" style={{ padding: '28px' }}>
+          <div className="brand-pill">Expansion Panel</div>
+          <h2 style={{ margin: '14px 0 8px', fontSize: '30px' }}>Add More Accounts</h2>
+          <p style={{ margin: '0 0 20px', color: '#475569', lineHeight: 1.6 }}>Use the expansion panel when you want to continue onboarding channel coverage for new brands.</p>
           <SocialConnectPanel onAccountAdded={handleAccountAdded} />
         </div>
       </div>

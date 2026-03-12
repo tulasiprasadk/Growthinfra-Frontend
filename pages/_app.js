@@ -81,31 +81,29 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <title>GrowthInfra</title>
+        <link rel="icon" href="/growthinfra-logo.png" />
       </Head>
       <Link href="/" className="global-home-logo" aria-label="Go to home">
         <img
           src="/growthinfra-logo.png"
           alt="GrowthInfra Home"
-          onError={(e) => {
-            e.currentTarget.src = '/signalflow-logo.svg';
-          }}
         />
       </Link>
       {isAuthenticated && (
-        <div style={{ position: 'fixed', top: '16px', right: '16px', zIndex: 1000, display: 'flex', gap: '10px' }}>
+        <div style={{ position: 'fixed', top: '16px', right: '16px', zIndex: 1000, display: 'flex', gap: '10px', padding: '10px', borderRadius: '18px', background: 'rgba(255,255,255,0.78)', backdropFilter: 'blur(12px)', border: '1px solid rgba(148,163,184,0.2)', boxShadow: '0 16px 40px rgba(15,23,42,0.12)' }}>
           <Link
             href="/dashboard"
             style={{
-              padding: '10px 14px',
+              padding: '10px 16px',
               borderRadius: '999px',
-              border: '1px solid #cbd5e1',
-              background: '#ffffff',
+              border: '1px solid rgba(14,165,233,0.2)',
+              background: 'linear-gradient(180deg, #ffffff, #f8fbff)',
               color: '#0f172a',
               fontSize: '14px',
               fontWeight: '700',
               textDecoration: 'none',
-              boxShadow: '0 8px 24px rgba(15, 23, 42, 0.08)',
+              boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)',
             }}
           >
             Dashboard
@@ -114,15 +112,15 @@ export default function App({ Component, pageProps }) {
             <Link
               href="/admin"
               style={{
-                padding: '10px 14px',
+                padding: '10px 16px',
                 borderRadius: '999px',
-                border: '1px solid #cbd5e1',
-                background: '#ffffff',
+                border: '1px solid rgba(14,165,233,0.2)',
+                background: 'linear-gradient(180deg, #ffffff, #f8fbff)',
                 color: '#0f172a',
                 fontSize: '14px',
                 fontWeight: '700',
                 textDecoration: 'none',
-                boxShadow: '0 8px 24px rgba(15, 23, 42, 0.08)',
+                boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)',
               }}
             >
               Admin
@@ -132,15 +130,15 @@ export default function App({ Component, pageProps }) {
             type="button"
             onClick={handleLogout}
             style={{
-              padding: '10px 14px',
+              padding: '10px 16px',
               borderRadius: '999px',
               border: '1px solid #fecaca',
-              background: '#ffffff',
+              background: 'linear-gradient(180deg, #ffffff, #fff7f7)',
               color: '#b91c1c',
               fontSize: '14px',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 8px 24px rgba(15, 23, 42, 0.08)',
+              boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)',
             }}
           >
             Logout

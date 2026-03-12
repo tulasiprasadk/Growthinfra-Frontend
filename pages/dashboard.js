@@ -36,113 +36,109 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <div className="max-w-7xl mx-auto px-8 py-10" style={{ maxWidth: '1400px', width: '100%' }}>
-        <div className="rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-8 shadow-2xl mb-10">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+    <div className="brand-shell">
+      <div style={{ maxWidth: '1380px', margin: '0 auto', display: 'grid', gap: '24px' }}>
+        <div className="brand-surface" style={{ padding: '34px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(7,89,133,0.92), rgba(15,23,42,0.96) 45%, rgba(30,41,59,0.96) 100%)' }} />
+          <div style={{ position: 'absolute', right: '-120px', top: '-80px', width: '340px', height: '340px', borderRadius: '999px', background: 'radial-gradient(circle, rgba(34,211,238,0.34), transparent 70%)' }} />
+          <div style={{ position: 'relative', color: '#fff', display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(280px, 0.8fr)', gap: '26px', alignItems: 'center' }}>
             <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 flex items-center justify-center">
-                  <img src="/signalflow-logo.svg" alt="SignalFlow" className="w-12 h-12 object-contain" />
-                </div>
-                <span className="text-xl font-bold">SignalFlow</span>
+              <div className="brand-pill" style={{ background: 'rgba(255,255,255,0.12)', color: '#e0f2fe', borderColor: 'rgba(186,230,253,0.2)' }}>GrowthInfra Mission Control</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '18px', flexWrap: 'wrap' }}>
+                <img src="/growthinfra-logo.png" alt="GrowthInfra" style={{ width: '250px', maxWidth: '100%', height: 'auto' }} />
               </div>
-              <p className="text-sm uppercase tracking-widest text-slate-300">Social Media Command Center</p>
-              <h1 className="text-4xl md:text-5xl font-bold mt-2">Dashboard</h1>
-              <p className="text-slate-300 mt-3 max-w-2xl">Manage connected accounts, launch campaigns, and schedule posts with a premium, streamlined workflow.</p>
-              <div className="flex flex-wrap gap-3 mt-6">
-                <a href="/workflow" className="px-5 py-2.5 bg-white text-slate-900 rounded-xl font-semibold hover:bg-slate-100 transition">Create a Post</a>
-                <a href="/accounts" className="px-5 py-2.5 border border-slate-400 text-white rounded-xl font-semibold hover:bg-slate-800 transition">Manage Accounts</a>
-                <button onClick={handleLogout} className="px-5 py-2.5 border border-rose-300 text-white rounded-xl font-semibold hover:bg-rose-900/30 transition">Logout</button>
+              <h1 style={{ fontSize: '46px', lineHeight: 1.02, margin: '18px 0 10px' }}>GrowthInfra Dashboard</h1>
+              <p style={{ margin: 0, color: 'rgba(226,232,240,0.92)', maxWidth: '740px', fontSize: '18px', lineHeight: 1.7 }}>
+                Orchestrate brand accounts, launch channel workflows, and keep publishing assets aligned from one GrowthInfra workspace.
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '24px' }}>
+                <a href="/workflow" style={{ padding: '14px 22px', background: '#fff', color: '#0f172a', borderRadius: '999px', fontWeight: 700, textDecoration: 'none' }}>Create a Post</a>
+                <a href="/accounts" style={{ padding: '14px 22px', border: '1px solid rgba(255,255,255,0.28)', color: '#fff', borderRadius: '999px', fontWeight: 700, textDecoration: 'none' }}>Manage Accounts</a>
+                <button onClick={handleLogout} style={{ padding: '14px 22px', borderRadius: '999px', border: '1px solid rgba(254,202,202,0.5)', background: 'rgba(127,29,29,0.16)', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>Logout</button>
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-4 lg:min-w-64">
-              <div className="bg-white/10 border border-white/20 rounded-2xl p-4">
-                <p className="text-xs text-slate-300">Signed in as</p>
-                <p className="text-lg font-bold break-all">{userEmail}</p>
+
+            <div style={{ display: 'grid', gap: '14px' }}>
+              <div style={{ padding: '18px', borderRadius: '22px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.16)', backdropFilter: 'blur(10px)' }}>
+                <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#bfdbfe', fontWeight: 700 }}>Signed in as</div>
+                <div style={{ marginTop: '6px', fontSize: '20px', fontWeight: 800, wordBreak: 'break-word' }}>{userEmail}</div>
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white/10 border border-white/20 rounded-2xl p-4 text-center">
-                  <p className="text-xs text-slate-300">Platforms</p>
-                  <p className="text-2xl font-bold">4</p>
+              <div className="brand-grid">
+                <div style={{ padding: '18px', borderRadius: '22px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.16)' }}>
+                  <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#bfdbfe', fontWeight: 700 }}>Workspace</div>
+                  <div style={{ marginTop: '6px', fontSize: '28px', fontWeight: 800 }}>Live</div>
                 </div>
-                <div className="bg-white/10 border border-white/20 rounded-2xl p-4 text-center">
-                  <p className="text-xs text-slate-300">Status</p>
-                  <p className="text-2xl font-bold">Live</p>
+                <div style={{ padding: '18px', borderRadius: '22px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.16)' }}>
+                  <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#bfdbfe', fontWeight: 700 }}>Channels</div>
+                  <div style={{ marginTop: '6px', fontSize: '28px', fontWeight: 800 }}>4+</div>
                 </div>
-                <div className="bg-white/10 border border-white/20 rounded-2xl p-4 text-center">
-                  <p className="text-xs text-slate-300">Scheduler</p>
-                  <p className="text-2xl font-bold">On</p>
+                <div style={{ padding: '18px', borderRadius: '22px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.16)' }}>
+                  <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#bfdbfe', fontWeight: 700 }}>Scheduling</div>
+                  <div style={{ marginTop: '6px', fontSize: '28px', fontWeight: 800 }}>On</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '24px' }}>
-          <div className="xl:col-span-8 space-y-8" style={{ minWidth: 0 }}>
-            <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-lg">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Connected Accounts</h2>
-                <a href="/accounts" className="text-slate-700 hover:text-slate-900 text-sm font-semibold">View all &rarr;</a>
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.9fr) minmax(320px, 0.9fr)', gap: '24px' }}>
+          <div style={{ display: 'grid', gap: '24px' }}>
+            <div className="brand-surface" style={{ padding: '28px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                <div>
+                  <div className="brand-pill">Connected Network</div>
+                  <h2 style={{ margin: '14px 0 8px', fontSize: '30px' }}>Connected GrowthInfra Accounts</h2>
+                  <p style={{ margin: 0, color: '#475569', lineHeight: 1.6 }}>Track every connected page, profile, and business account from one operational board.</p>
+                </div>
+                <a href="/accounts" style={{ textDecoration: 'none', color: '#0369a1', fontWeight: 700 }}>View all accounts</a>
               </div>
               <SocialAccountList key={refreshKey} />
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-lg">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">Add More Accounts</h2>
+            <div className="brand-surface" style={{ padding: '28px' }}>
+              <div className="brand-pill">Expansion</div>
+              <h2 style={{ margin: '14px 0 8px', fontSize: '30px' }}>Add More Accounts</h2>
+              <p style={{ margin: '0 0 20px', color: '#475569', lineHeight: 1.6 }}>Bring more business pages and social profiles into the GrowthInfra control layer.</p>
               <SocialConnectPanel onAccountAdded={() => setRefreshKey((prev) => prev + 1)} />
             </div>
           </div>
 
-          <div className="xl:col-span-4 space-y-8" style={{ minWidth: 0 }}>
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-lg">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">Quick Actions</h3>
-              <div className="grid grid-cols-1 gap-4">
-                <a href="/workflow" className="group p-4 bg-slate-50 rounded-xl border border-slate-200 hover:shadow-md transition">
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">Plan</div>
-                    <div>
-                      <p className="font-semibold text-slate-900">Content Workflow</p>
-                      <p className="text-xs text-slate-600">Create, edit, schedule</p>
-                    </div>
-                  </div>
+          <div style={{ display: 'grid', gap: '24px' }}>
+            <div className="brand-surface" style={{ padding: '24px' }}>
+              <div className="brand-pill">Quick Actions</div>
+              <div style={{ display: 'grid', gap: '14px', marginTop: '18px' }}>
+                <a href="/workflow" style={{ padding: '18px', borderRadius: '20px', background: 'linear-gradient(180deg, #ffffff, #f8fbff)', border: '1px solid rgba(148,163,184,0.18)', textDecoration: 'none' }}>
+                  <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', fontWeight: 700 }}>Create</div>
+                  <div style={{ marginTop: '8px', fontSize: '20px', fontWeight: 800 }}>Campaign Workflow</div>
+                  <div style={{ marginTop: '6px', color: '#475569' }}>Draft, edit, and schedule posts.</div>
                 </a>
-                <a href="/accounts" className="group p-4 bg-slate-50 rounded-xl border border-slate-200 hover:shadow-md transition">
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">Links</div>
-                    <div>
-                      <p className="font-semibold text-slate-900">Connected Accounts</p>
-                      <p className="text-xs text-slate-600">Manage profiles</p>
-                    </div>
-                  </div>
+                <a href="/accounts" style={{ padding: '18px', borderRadius: '20px', background: 'linear-gradient(180deg, #ffffff, #f8fbff)', border: '1px solid rgba(148,163,184,0.18)', textDecoration: 'none' }}>
+                  <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', fontWeight: 700 }}>Manage</div>
+                  <div style={{ marginTop: '8px', fontSize: '20px', fontWeight: 800 }}>Account Control</div>
+                  <div style={{ marginTop: '6px', color: '#475569' }}>Audit, connect, and clean profile access.</div>
                 </a>
-                <a href="/reports" className="group p-4 bg-slate-50 rounded-xl border border-slate-200 hover:shadow-md transition">
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">Reports</div>
-                    <div>
-                      <p className="font-semibold text-slate-900">Reports</p>
-                      <p className="text-xs text-slate-600">Insights and performance</p>
-                    </div>
-                  </div>
+                <a href="/reports" style={{ padding: '18px', borderRadius: '20px', background: 'linear-gradient(180deg, #ffffff, #f8fbff)', border: '1px solid rgba(148,163,184,0.18)', textDecoration: 'none' }}>
+                  <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#64748b', fontWeight: 700 }}>Measure</div>
+                  <div style={{ marginTop: '8px', fontSize: '20px', fontWeight: 800 }}>Reports</div>
+                  <div style={{ marginTop: '6px', color: '#475569' }}>Review insights and performance trends.</div>
                 </a>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-lg">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">System Status</h3>
-              <div className="grid grid-cols-1 gap-4">
-                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl">
-                  <p className="font-semibold text-slate-900 mb-1">Backend Server</p>
-                  <p className="text-xs text-slate-600">Running on deployed backend</p>
+            <div className="brand-surface" style={{ padding: '24px' }}>
+              <div className="brand-pill">System Status</div>
+              <div style={{ display: 'grid', gap: '14px', marginTop: '18px' }}>
+                <div className="brand-stat">
+                  <p className="brand-stat-label">Backend</p>
+                  <p className="brand-stat-value" style={{ fontSize: '20px' }}>Deployed and active</p>
                 </div>
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl">
-                  <p className="font-semibold text-slate-900 mb-1">Frontend Server</p>
-                  <p className="text-xs text-slate-600">Running on deployed frontend</p>
+                <div className="brand-stat">
+                  <p className="brand-stat-label">Frontend</p>
+                  <p className="brand-stat-value" style={{ fontSize: '20px' }}>GrowthInfra live</p>
                 </div>
-                <div className="p-4 bg-purple-50 border border-purple-200 rounded-2xl">
-                  <p className="font-semibold text-slate-900 mb-1">OAuth Endpoints</p>
-                  <p className="text-xs text-slate-600">All platforms ready</p>
+                <div className="brand-stat">
+                  <p className="brand-stat-label">OAuth Layer</p>
+                  <p className="brand-stat-value" style={{ fontSize: '20px' }}>Ready for use</p>
                 </div>
               </div>
             </div>
@@ -152,5 +148,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-
