@@ -6,7 +6,19 @@ export default function SocialConnectButton({ provider, name, icon, onConnect })
     const base = getApiBaseUrl();
     const user = getStoredUser();
     const organizationId = user?.memberships?.[0]?.organization?.id || '';
-    const query = organizationId ? `?organizationId=${encodeURIComponent(organizationId)}` : '';
+    const params = new URLSearchParams();
+    if (organizationId) {
+      params.set('organizationId', organizationId);
+    }
+
+    if (provider === 'twitter' && typeof window !== 'undefined') {
+      const raw = window.prompt('Enter the Twitter/X handle for this account (without @).');
+      const accountLabel = String(raw || '').trim().replace(/^@+/, '');
+      if (!accountLabel) return;
+      params.set('accountLabel', accountLabel);
+    }
+
+    const query = params.toString() ? `?${params.toString()}` : '';
     const url = `${base}/api/social/connect/${provider}${query}`;
     // Redirect to backend OAuth endpoint
     if (typeof window !== 'undefined') {
